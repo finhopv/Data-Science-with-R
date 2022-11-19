@@ -1,1 +1,1 @@
-print('Iniciando o Modelo DEA')
+print('Iniciando o Modelo DEA com R')
