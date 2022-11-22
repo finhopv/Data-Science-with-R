@@ -70,7 +70,7 @@ doPlots <- function(data_in, fun, ii, ncol=3)
 
 doPlots(base, fun = plotHist, ii = 3:4, ncol = 2)
 
-doPlots(base, fun = plotHist, ii = 6:10, ncol = 2)
+doPlots(base, fun = plotHist, ii = 8:10, ncol = 2)
 
 ## Round values on column "price"
 
@@ -82,5 +82,7 @@ ggplot(base, aes(x = bedrooms, y = price)) +
   geom_hline(aes(yintercept=80), 
              colour='red', linetype='dashed', lwd=2) +
   #scale_y_continuous(labels=label_dollar()) +
-  theme_few()
+  theme_few
+
+max(base$price)
 
