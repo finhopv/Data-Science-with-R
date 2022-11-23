@@ -10,7 +10,7 @@ library('corrplot')
 library('GGally')
 library('e1071')
 
-df<-read.csv("house_prices.csv")
+df<-read.csv("R projects/Data-Science-with-R/house_prices.csv")
 head(df)
 
 str(df)
@@ -45,7 +45,7 @@ plotHist <- function(data_in, i)
 ## Density plot function
 
 plotDen <- function(data_in, i){
-  data <- data.frame(x=data_in[[i]], SalePrice = data_in$SalePrice)
+  data <- data.frame(x=data_in[[i]], SalePrice = base$price)
   p <- ggplot(data= data) + geom_line(aes(x = x), stat = 'density', size = 1,alpha = 1.0) +
     xlab(paste0((colnames(data_in)[i]), '\n', 'Skewness: ',round(skewness(data_in[[i]], na.rm = TRUE), 2))) + theme_light() 
   return(p)
@@ -85,4 +85,8 @@ ggplot(base, aes(x = bedrooms, y = price)) +
   theme_few
 
 max(base$price)
+
+#Density plots for numerics  variables
+doPlots(base, fun = plotDen, ii = 3:4, ncol = 2)
+
 
