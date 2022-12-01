@@ -10,7 +10,7 @@ library('corrplot')
 library('GGally')
 library('e1071')
 
-df<-read.csv("R projects/Data-Science-with-R/house_prices.csv")
+df<-read.csv("house_prices.csv")
 head(df)
 
 str(df)
@@ -88,5 +88,91 @@ max(base$price)
 
 #Density plots for numerics  variables
 doPlots(base, fun = plotDen, ii = 3:4, ncol = 2)
+
+# Explore the correlation
+correlations <- cor(na.omit(base[,-1]))
+
+# Correlations
+
+row_indic <- apply(correlations, 1, function(x) sum(x > 0.3 | x < -0.3) > 1)
+correlations<- correlations[row_indic ,row_indic ]
+corrplot(correlations, method="square")
+
+
+
+# Verifying the missing values 
+
+# Looking at the distribution and summary of the target variable
+
+summary(base$price)
+quantile(base$price)
+
+# Conclusion: From summary, it was observed that minimum price is greater than 0
+
+## Histogram for target variable
+
+hist(base$price)
+
+# Plotting 'sqft_living' too see if there are any outliers
+
+ggplot(base,aes(y=price,x=sqft_living))+geom_point()
+
+## Taking all the missing data indices in one variables
+
+Missing_indices <- sapply(base,function(x) sum(is.na(x)))
+Missing_Summary <- data.frame(index = names(base),Missing_Values=Missing_indices)
+Missing_Summary[Missing_Summary$Missing_Values > 0,]
+
+
+#LotFrontage
+#Imputing missing Lot Frontage by the median
+
+base$sqft_lot[which(is.na(base$sqft_lot))] <- median(base$sqft_lot,na.rm = T)
+
+base$sqft_lot
+
+base
+
+#determining skew of each numeric variable
+Column_classes <- sapply(names(base),function(x){class(base[[x]])})
+numeric_columns <-names(Column_classes[Column_classes != "factor"])
+
+skew <- sapply(numeric_columns,function(x){skewness(base[[x]],na.rm = T)})
+
+# Let us determine a threshold skewness and transform all variables above the treshold.
+
+skew <- skew[skew > 0.75]
+
+# transform excessively skewed features with log(x + 1)
+
+for(x in names(skew)) 
+{
+  base[[x]] <- log(base[[x]] + 1)
+}
+
+# Train and test dataset creation
+
+train<- rep(1,16209)
+test<- rep(0,5404)
+isTrain<- c(train,test)
+
+# create the column isTrain
+base <- cbind(base, isTrain)
+head(base)
+
+train <- base[base$isTrain==1,]
+test <- base[base$isTrain==0,]
+smp_size <- floor(0.75 * nrow(train))
+
+## setting the seed to make the partition reproducible75 % == 16254
+
+set.seed(123)
+train_ind <- sample(seq_len(nrow(train)), size = smp_size)
+
+train_new <- train[train_ind, ]
+validate <- train[-train_ind, ]
+train_new <- subset(train_new,select=-c(id,isTrain))
+validate <- subset(validate,select=-c(id,isTrain))
+nrow(train_new)
 
 
