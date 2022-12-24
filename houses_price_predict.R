@@ -175,4 +175,13 @@ train_new <- subset(train_new,select=-c(id,isTrain))
 validate <- subset(validate,select=-c(id,isTrain))
 nrow(train_new)
 
+# Removing the long column
+train_new <- subset(train_new, select = -c(long))
+str(train_new)
+
+
+# Build the Model
+library(randomForest)
+house_model <- randomForest(price~.,
+                            data = train_new)
 
