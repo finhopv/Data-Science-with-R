@@ -201,3 +201,15 @@ RMSE <- function(x,y){
   return(a)
 }
 
+# RMSE
+
+RMSE1 <- RMSE(prediction, validate$price)
+RMSE1
+
+RMSE1 <- round(RMSE1, digits = 5)
+test
+
+# Output file
+prediction[which(is.na(prediction))] <- mean(prediction,na.rm=T)
+submit <- data.frame(Id=test$id,price=prediction)
+write.csv(submit,file="House_Price_Pradeep.csv",row.names=F)
