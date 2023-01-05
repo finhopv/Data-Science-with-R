@@ -185,3 +185,19 @@ library(randomForest)
 house_model <- randomForest(price~.,
                             data = train_new)
 
+# Variable importance
+importance    <- importance(house_model)
+varImpPlot(house_model)
+
+# Final Prediction
+# Predict using the test set
+
+prediction <- predict(house_model,test)
+
+# Evaluation RMSE function
+
+RMSE <- function(x,y){
+  a <- sqrt(sum((log(x)-log(y))^2)/length(y))
+  return(a)
+}
+
